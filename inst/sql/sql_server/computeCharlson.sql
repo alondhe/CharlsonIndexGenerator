@@ -33,8 +33,3 @@ select
 	  where condition_era_start_date <= DATEADD(DAY, 0, cohort.cohort_start_date)
   )
 group by subject_id
-
-
-
-
-

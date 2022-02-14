@@ -4,7 +4,7 @@ Title: Generating Charlson Index for a Cohort
 Version: 0.0.1
 Date: 2022-02-13
 Authors@R: c(
-  person("Ajit", "Londhe", , "londhe@ohdsi.org", role = c("aut"))
+  person("Ajit", "Londhe", , "londhe@ohdsi.org", role = c("aut", "cre"))
   )
 Maintainer: Ajit Londhe <londhe@ohdsi.org>
 Description: An R package for generating Charlson index scores for a cohort using data in the Common Data Model.
@@ -18,17 +18,7 @@ Depends:
 Imports:
   dplyr,
   rJava,
-  jsonlite,
-  SqlRender (>= 1.6.0),
-  ParallelLogger (>= 2.0.2)
-Suggests:
-  testthat,
-  knitr,
-  rmarkdown,
-  Eunomia,
-  withr
-Remotes:
-  ohdsi/Eunomia
+  SqlRender (>= 1.6.0)
 NeedsCompilation: no
 RoxygenNote: 7.1.2
 Encoding: UTF-8
