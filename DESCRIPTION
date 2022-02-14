@@ -1,0 +1,34 @@
+Package: CharlsonIndexGenerator
+Type: Package
+Title: Generating Charlson Index for a Cohort
+Version: 0.0.1
+Date: 2022-02-13
+Authors@R: c(
+  person("Ajit", "Londhe", , "londhe@ohdsi.org", role = c("aut"))
+  )
+Maintainer: Ajit Londhe <londhe@ohdsi.org>
+Description: An R package for generating Charlson index scores for a cohort using data in the Common Data Model.
+License: Apache License 2.0
+VignetteBuilder: knitr
+URL: https://github.com/alondhe/CharlsonIndexGenerator
+BugReports: https://github.com/alondhe/CharlsonIndexGenerator/issues
+Depends:
+  R (>= 3.2.2),
+  DatabaseConnector (>= 3.0.0)
+Imports:
+  dplyr,
+  rJava,
+  jsonlite,
+  SqlRender (>= 1.6.0),
+  ParallelLogger (>= 2.0.2)
+Suggests:
+  testthat,
+  knitr,
+  rmarkdown,
+  Eunomia,
+  withr
+Remotes:
+  ohdsi/Eunomia
+NeedsCompilation: no
+RoxygenNote: 7.1.2
+Encoding: UTF-8
