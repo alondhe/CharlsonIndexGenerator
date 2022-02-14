@@ -27,11 +27,13 @@
 #' @param connectionDetails       An R object of type\cr\code{connectionDetails} created using the function
 #'                                \code{createConnectionDetails} in the \code{DatabaseConnector} package.
 #' @param cdmDatabaseSchema       The fully qualified name of the CDM schema
+#' @param cohortName              A readable name of the drug cohort, used for writing out the SQL
 #' @param drugConceptIds          A list of drug concepts
 #' 
 #' @export
 getCharlsonForDrugCohort <- function(connectionDetails,
                                      cdmDatabaseSchema,
+                                     cohortName = "",
                                      drugConceptIds = c()) {
   
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
@@ -40,15 +42,23 @@ getCharlsonForDrugCohort <- function(connectionDetails,
   charlsonScoringSql <- .getCharlsonScoringSql()
   charlsonConceptSql <- .getCharlsonConceptSql()
   
-  cohortSql <- SqlRender::loadRenderTranslateSql(sqlFilename = "")
-  charlsonSql <- SqlRender::loadRenderTranslateSql()
+  cohortSql <- SqlRender::loadRenderTranslateSql(sqlFilename = "createDrugCohort.sql", 
+                                                 packageName = "CharlsonIndexGenerator", 
+                                                 dbms = "sql server",
+                                                 cdmDatabaseSchema = cdmDatabaseSchema,
+                                                 drugConceptIds = paste(drugConceptIds, collapse = ","))
+  charlsonSql <- SqlRender::loadRenderTranslateSql(sqlFilename = "computeCharlson.sql",
+                                                   packageName = "CharlsonIndexGenerator", 
+                                                   dbms = "sql server",
+                                                   cdmDatabaseSchema = cdmDatabaseSchema,
+                                                   charlsonScoringSql = charlsonScoringSql,
+                                                   charlsonConceptSql = charlsonConceptSql)
+  finalSql <- SqlRender::loadRenderTranslateSql(sqlFilename = "finalQuery.sql", 
+                                                packageName = "CharlsonIndexGenerator",
+                                                dbms = connectionDetails$dbms,
+                                                cohortSql = cohortSql,
+                                                charlsonSql = charlsonSql)
   
+  SqlRender::writeSql(sql = finalSql, targetFile = sprintf("CharlsonIndex_%s.sql", cohortName))
 }
 
-getCharlsonForCohort <- function(connectionDetails,
-                                 cdmDatabaseSchema,
-                                 resultsDatabaseSchema,
-                                 cohortTable = "cohort",
-                                 cohortDefinitionId) {
-  
-}

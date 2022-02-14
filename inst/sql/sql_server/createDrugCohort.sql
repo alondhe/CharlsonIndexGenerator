@@ -64,7 +64,7 @@ as
         C.visit_occurrence_id,
         C.drug_exposure_start_date as sort_date
       from @cdmDatabaseSchema.DRUG_EXPOSURE C
-      JOIN #Codesets cs on C.drug_concept_id = cs.concept_id
+      JOIN codesets cs on C.drug_concept_id = cs.concept_id
     -- End Drug Exposure Criteria
     )
 	  JOIN @cdmDatabaseSchema.observation_period OP on E.person_id = OP.person_id 

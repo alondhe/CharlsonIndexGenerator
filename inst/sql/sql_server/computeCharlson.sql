@@ -26,7 +26,7 @@ select
       charlson_scoring.diag_category_id,
 	    charlson_scoring.weight,
 	    cohort.subject_id
-	  from cohort
+	  from final_cohort cohort
 	  join @cdmDatabaseSchema.condition_era on cohort.subject_id = condition_era.person_id
 	  join charlson_concepts on condition_era.condition_concept_id = charlson_concepts.concept_id
 	  join charlson_scoring on charlson_concepts.diag_category_id = charlson_scoring.diag_category_id
