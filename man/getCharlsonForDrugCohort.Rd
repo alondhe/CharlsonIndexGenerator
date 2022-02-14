@@ -7,8 +7,10 @@
 getCharlsonForDrugCohort(
   connectionDetails,
   cdmDatabaseSchema,
-  cohortName = "",
-  drugConceptIds = c()
+  cohortName = "drugCohort",
+  pathToSqlFile = "",
+  drugConceptIds = c(),
+  sqlOnly = FALSE
 )
 }
 \arguments{
@@ -19,7 +21,11 @@ getCharlsonForDrugCohort(
 
 \item{cohortName}{A readable name of the drug cohort, used for writing out the SQL}
 
+\item{pathToSqlFile}{The path to use to write out the SQL file}
+
 \item{drugConceptIds}{A list of drug concepts}
+
+\item{sqlOnly}{Should we just export a SQL file, or actually run the query?}
 }
 \description{
 Get Charlson Index for a Drug cohort

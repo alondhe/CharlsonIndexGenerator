@@ -28,16 +28,17 @@
 #'                                \code{createConnectionDetails} in the \code{DatabaseConnector} package.
 #' @param cdmDatabaseSchema       The fully qualified name of the CDM schema
 #' @param cohortName              A readable name of the drug cohort, used for writing out the SQL
+#' @param pathToSqlFile           The path to use to write out the SQL file
 #' @param drugConceptIds          A list of drug concepts
+#' @param sqlOnly                 Should we just export a SQL file, or actually run the query?
 #' 
 #' @export
 getCharlsonForDrugCohort <- function(connectionDetails,
                                      cdmDatabaseSchema,
-                                     cohortName = "",
-                                     drugConceptIds = c()) {
-  
-  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
-  on.exit(DatabaseConnector::disconnect(connection = connection))
+                                     cohortName = "drugCohort",
+                                     pathToSqlFile = "",
+                                     drugConceptIds = c(),
+                                     sqlOnly = FALSE) {
   
   charlsonScoringSql <- .getCharlsonScoringSql()
   charlsonConceptSql <- .getCharlsonConceptSql()
@@ -59,6 +60,15 @@ getCharlsonForDrugCohort <- function(connectionDetails,
                                                 cohortSql = cohortSql,
                                                 charlsonSql = charlsonSql)
   
-  SqlRender::writeSql(sql = finalSql, targetFile = sprintf("CharlsonIndex_%s.sql", cohortName))
+  SqlRender::writeSql(sql = finalSql, targetFile = file.path(pathToSqlFile, 
+                                                             sprintf("CharlsonIndex_%s.sql", cohortName)))
+  
+  if (!sqlOnly) {
+    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+    on.exit(DatabaseConnector::disconnect(connection = connection))
+    result <- DatabaseConnector::querySql(connection = connection, sql = finalSql)
+    return (result)
+  }
+  return (finalSql)
 }
 
