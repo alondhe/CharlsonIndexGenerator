@@ -47,7 +47,7 @@ ui <- dashboardPage(
                 box(width = 12, title = "Method Description",
                     tags$ol(
                       lapply(charlsonSteps, function(cs) {
-                        tags$li(cs)
+                        h5(tags$li(cs))
                       })
                     )
                     ),

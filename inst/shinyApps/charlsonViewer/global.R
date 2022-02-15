@@ -17,7 +17,8 @@ charlsonSteps <- c(
   "We join the cohort to the condition_era table and to the Charlson concepts and scoring tables, 
   looking for condition eras (span of time when the Person is assumed to have a given condition) that 
   precede or coincide with the exposure to the drugs of interest",
-  "We then sum all of the weights of each Charlson category fulfilled by the patients to get the final Charlson score"
+  "We then sum all of the weights of each Charlson category fulfilled by the patients to get the final Charlson score",
+  "Additionally, we can adjust for age by adding another weight: patients in their 50s, add 1. Patients in their 60s, add 2. Patients in their 70s, add 3. Patients 80 or above, add 4."
 )
 
 
