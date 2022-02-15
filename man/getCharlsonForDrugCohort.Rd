@@ -7,8 +7,6 @@
 getCharlsonForDrugCohort(
   connectionDetails,
   cdmDatabaseSchema,
-  cohortName = "drugCohort",
-  pathToSqlFile = "",
   drugConceptIds = c(),
   sqlOnly = FALSE
 )
@@ -18,10 +16,6 @@ getCharlsonForDrugCohort(
 \code{createConnectionDetails} in the \code{DatabaseConnector} package.}
 
 \item{cdmDatabaseSchema}{The fully qualified name of the CDM schema}
-
-\item{cohortName}{A readable name of the drug cohort, used for writing out the SQL in SqlOnly mode}
-
-\item{pathToSqlFile}{The path to use to write out the SQL file, when using SqlOnly mode}
 
 \item{drugConceptIds}{A list of drug concepts}
 

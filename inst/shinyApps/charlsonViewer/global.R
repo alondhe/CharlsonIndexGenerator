@@ -11,7 +11,13 @@ step3 <- "Below are a box plot of the Charlson Index scores for this cohort, as 
 
 
 charlsonSteps <- c(
-  "From the Charlson method, we assign scoring weights to 17 "
+  "From the Charlson method, we assign scoring weights to 17 diagnostic categories",
+  "Using the OMOP Vocabulary, we identify appropriate ancestor concept ids based on these diagnostic categories. 
+  This will help us obtain all appropriate condition concept ids for each diagnostic category",
+  "We join the cohort to the condition_era table and to the Charlson concepts and scoring tables, 
+  looking for condition eras (span of time when the Person is assumed to have a given condition) that 
+  precede or coincide with the exposure to the drugs of interest",
+  "We then sum all of the weights of each Charlson category fulfilled by the patients to get the final Charlson score"
 )
 
 
@@ -31,11 +37,16 @@ references <- c(
   return(df)
 }
 
+.createSqlListString <- function(array) {
+  paste(lapply(unique(array), function(l) shQuote(l)), collapse = ",")
+}
+
 dbmsChoices <- c("eunomia", SqlRender::listSupportedDialects()$dialect)
 
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
-allDrugConcepts <- DatabaseConnector::querySql(connection = connection, 
-  sql = "select distinct concept_id, concept_name, concept_class_id
-         from main.concept
-         where domain_id = 'Drug' and standard_concept = 'S' and invalid_reason is null")
+charlsonConcepts <- read.csv(system.file("csv/charlsonConcepts.csv", package = "CharlsonIndexGenerator"), 
+                     as.is = TRUE, stringsAsFactors = FALSE)
+
+charlsonScoring <- read.csv(system.file("csv/charlsonScoring.csv", package = "CharlsonIndexGenerator"), 
+                            as.is = TRUE, stringsAsFactors = FALSE) |>
+  dplyr::mutate(diag_category_name = gsub(pattern = "'", replacement = "", x = diag_category_name))
+

@@ -13,9 +13,12 @@ shinyServer(function(input, output, session) {
   }
   
   selectedDrugConcepts <- reactive({
-    allDrugConcepts[input$drugConceptIds_rows_selected,]
+    allDrugConcepts()[input$drugConceptIds_rows_selected,]
   })
   
+  cohortName <- reactive({
+    sprintf("Patients exposed to: %s", paste(selectedDrugConcepts()$CONCEPT_NAME, collapse = ", "))
+  })
   
   observe({
     fields <- c("host", "cdmDatabaseSchema", "port", "user", "password", "extraSettings")
@@ -56,26 +59,44 @@ shinyServer(function(input, output, session) {
     switchPage(2)
   })
   
+  theseConnectionDetails <- reactive({
+    if (input$dbms == "eunomia") {
+      connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+      cdmDatabaseSchema <- "main"
+    } else {
+      connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = input$dbms, 
+                                                                      user = input$user,
+                                                                      server = input$host, 
+                                                                      port = input$port, 
+                                                                      extraSettings = input$extraSettings,
+                                                                      password = input$password, 
+                                                                      pathToDriver = "www")
+      cdmDatabaseSchema <- input$cdmDatabaseSchema
+    }
+    list(connectionDetails = connectionDetails,
+         cdmDatabaseSchema = cdmDatabaseSchema)
+  })
+  
+  allDrugConcepts <- reactive({
+    connection <- DatabaseConnector::connect(connectionDetails = theseConnectionDetails()$connectionDetails)
+    sql <- sprintf("select distinct concept_id, concept_name, concept_class_id
+                    from %s.concept
+                    where domain_id = 'Drug' and standard_concept = 'S' and invalid_reason is null", 
+                   theseConnectionDetails()$cdmDatabaseSchema)
+    allDrugConcepts <- DatabaseConnector::querySql(connection = connection, 
+                                                   sql = sql)
+    DatabaseConnector::disconnect(connection = connection)
+    allDrugConcepts
+  })
+  
   charlsonResult <- reactive({
     if (nrow(selectedDrugConcepts()) > 0) {
-      if (input$dbms == "eunomia") {
-        connectionDetails <- Eunomia::getEunomiaConnectionDetails()
-        cdmDatabaseSchema <- "main"
-      } else {
-        connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = input$dbms, 
-                                                                        user = input$user,
-                                                                        server = input$host, 
-                                                                        port = input$port, 
-                                                                        extraSettings = input$extraSettings,
-                                                                        password = input$password)
-        cdmDatabaseSchema <- input$cdmDatabaseSchema
-      }
-      connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
-      charlsonResult <- CharlsonIndexGenerator::getCharlsonForDrugCohort(connectionDetails = connectionDetails,
-                                                                         cdmDatabaseSchema = cdmDatabaseSchema,
+      connection <- DatabaseConnector::connect(connectionDetails = theseConnectionDetails()$connectionDetails)
+      charlsonResult <- CharlsonIndexGenerator::getCharlsonForDrugCohort(connectionDetails = theseConnectionDetails()$connectionDetails,
+                                                                         cdmDatabaseSchema = theseConnectionDetails()$cdmDatabaseSchema,
                                                                          drugConceptIds = selectedDrugConcepts()$CONCEPT_ID,
                                                                          sqlOnly = FALSE)
-      
+      DatabaseConnector::disconnect(connection = connection)
       charlsonResult |> dplyr::select(`Person Id` = SUBJECT_ID,
                                       `Cohort Start Date` = COHORT_START_DATE,
                                       `Cohort End Date` = COHORT_END_DATE,
@@ -84,7 +105,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$drugConceptIds <- renderDataTable({
-    df <- allDrugConcepts |>
+    df <- allDrugConcepts() |>
       dplyr::select(`Concept Id` = CONCEPT_ID,
                     `Concept Name` = CONCEPT_NAME,
                     `Concept Class Id` = CONCEPT_CLASS_ID)
@@ -109,8 +130,41 @@ shinyServer(function(input, output, session) {
   })
   
   output$boxplot <- renderPlotly({
-    fig <- plotly::plot_ly(data = charlsonResult(), y = ~`Charlson Index`, type = "box")
+    fig <- plotly::plot_ly(data = charlsonResult(), y = ~`Charlson Index`, type = "box", name = cohortName())
     
     fig
+  })
+  
+  output$charlsonScoring <- renderDataTable({
+    df <- charlsonScoring |>
+      dplyr::select(`Diagnosis Category Id` = diag_category_id,
+                    `Diagnosis Category Name` = diag_category_name,
+                    Weight = weight)
+    
+    DT::datatable(df,
+                  filter = "top",
+                  style = "bootstrap4",
+                  selection = "multiple",
+                  rownames = FALSE,
+                  class = "cell-border strip hover",
+                  options = list(autoWidth = TRUE))
+  })
+  
+  output$charlsonConcepts <- renderDataTable({
+    df <- charlsonConcepts |>
+      dplyr::select(`Diagnosis Category Id` = diag_category_id,
+                    `Ancestor Concept Id` = ancestor_concept_id)
+    
+    DT::datatable(df,
+                  filter = "top",
+                  style = "bootstrap4",
+                  selection = "multiple",
+                  rownames = FALSE,
+                  class = "cell-border strip hover",
+                  options = list(autoWidth = TRUE))
+  })
+  
+  output$cohortMeta <- renderUI({
+    div(h3(cohortName()))
   })
 })

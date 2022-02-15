@@ -29,67 +29,84 @@ ui <- dashboardPage(
       tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
     tabItems(
       tabItem("intro",
-              box(width = 12,
-                  title = "Introduction",
-                  p(charlsonIntro),
-                  p(appIntro)),
-              box(width = 12, title = "References",
-                  tags$ol(
-                    lapply(references, function(r) {
-                      tags$li(r)
-                    }))
+              fluidRow(
+                box(width = 12,
+                    title = "Introduction",
+                    p(charlsonIntro),
+                    p(appIntro)),
+                box(width = 12, title = "References",
+                    tags$ol(
+                      lapply(references, function(r) {
+                        tags$li(r)
+                      }))
+                )
               )
       ),
       tabItem("method",
-              box(width = 6,
-                  DT::dataTableOutput(outputId = "charlsonScoring") |> shinycssloaders::withSpinner()),
-              box(width = 6,
-                  DT::dataTableOutput(outputId = "charlsonConcepts") |> shinycssloaders::withSpinner())
+              fluidRow(
+                box(width = 12, title = "Method Description",
+                    tags$ol(
+                      lapply(charlsonSteps, function(cs) {
+                        tags$li(cs)
+                      })
+                    )
+                    ),
+                box(width = 6, title = "Charlson Scoring Weights",
+                    DT::dataTableOutput(outputId = "charlsonScoring") |> shinycssloaders::withSpinner()),
+                box(width = 6, title = "Charlson Ancestor Concepts",
+                    DT::dataTableOutput(outputId = "charlsonConcepts") |> shinycssloaders::withSpinner())
+              )
               ),
       tabItem("charlson",
               tabsetPanel(id = "wizard", type = "hidden",
                           tabPanel("page_1",
-                                   box(width = 12,
-                                       title = "Configure Connection",
-                                       p(step1),
-                                       selectizeInput(inputId = "dbms", label = "DBMS", 
-                                                      choices = dbmsChoices),
-                                       textInput(inputId = "cdmDatabaseSchema", label = "CDM Database Schema"),
-                                       textInput(inputId = "host", label = "Host URL", width = "100%"),
-                                       textInput(inputId = "user", label = "User Name", width = "100%"),
-                                       textInput(inputId = "port", label = "Port", width = "100%"),
-                                       textInput(inputId = "extraSettings", label = "Extra Settings", width = "100%"),
-                                       passwordInput(inputId = "password", label = "Password", value = "", width = NULL, placeholder = NULL)
-                                   ),
-                                   box(width = 12,
-                                       actionButton(inputId = "page_12", label = "Next: Select Drug Concepts",
-                                                    icon = icon("prescription")))
+                                   fluidRow(
+                                     box(width = 12,
+                                         title = "Configure Connection",
+                                         p(step1),
+                                         selectizeInput(inputId = "dbms", label = "DBMS", 
+                                                        choices = dbmsChoices),
+                                         textInput(inputId = "cdmDatabaseSchema", label = "CDM Database Schema"),
+                                         textInput(inputId = "host", label = "Host URL", width = "100%"),
+                                         textInput(inputId = "user", label = "User Name", width = "100%"),
+                                         textInput(inputId = "port", label = "Port", width = "100%"),
+                                         textInput(inputId = "extraSettings", label = "Extra Settings", width = "100%"),
+                                         passwordInput(inputId = "password", label = "Password", value = "", width = NULL, placeholder = NULL)
+                                     ),
+                                     box(width = 12,
+                                         actionButton(inputId = "page_12", label = "Next: Select Drug Concepts",
+                                                      icon = icon("prescription")))
+                                   )
                           ),
                           tabPanel("page_2",
-                                   box(width = 12,
-                                       title = "Select Drug Concepts for Cohort",
-                                       p(step2),
-                                       DT::dataTableOutput(outputId = "drugConceptIds") |> 
-                                        shinycssloaders::withSpinner()),
-                                   box(width = 12,
-                                       actionButton(inputId = "page_21", label = "Previous: Configure Connection",
-                                                    icon = icon("database")),
-                                       actionButton(inputId = "page_23", label = "Next: View Charlson Results",
-                                                    icon = icon("chart-line")))
+                                   fluidRow(
+                                     box(width = 12,
+                                         title = "Select Drug Concepts for Cohort",
+                                         p(step2),
+                                         DT::dataTableOutput(outputId = "drugConceptIds") |> 
+                                          shinycssloaders::withSpinner()),
+                                     box(width = 12,
+                                         actionButton(inputId = "page_21", label = "Previous: Configure Connection",
+                                                      icon = icon("database")),
+                                         actionButton(inputId = "page_23", label = "Next: View Charlson Results",
+                                                      icon = icon("chart-line")))
+                                   )
                           ),
                           tabPanel("page_3",
-                                   box(width = 12,
-                                       uiOutput(outputId = "cohortMeta"),
-                                       p(step3)),
-                                   box(width = 6,
-                                       plotlyOutput(outputId = "boxplot") |> 
-                                         shinycssloaders::withSpinner()),
-                                   box(width = 6,
-                                       DT::dataTableOutput(outputId = "cohortRows") |> 
-                                         shinycssloaders::withSpinner()),
-                                   box(width = 12,
-                                       actionButton(inputId = "page_32", label = "Previous: Select Drug Concepts",
-                                                    icon = icon("prescription")))
+                                   fluidRow(
+                                     box(width = 12,
+                                         uiOutput(outputId = "cohortMeta"),
+                                         p(step3)),
+                                     box(width = 6,
+                                         plotlyOutput(outputId = "boxplot") |> 
+                                           shinycssloaders::withSpinner()),
+                                     box(width = 6,
+                                         DT::dataTableOutput(outputId = "cohortRows") |> 
+                                           shinycssloaders::withSpinner()),
+                                     box(width = 12,
+                                         actionButton(inputId = "page_32", label = "Previous: Select Drug Concepts",
+                                                      icon = icon("prescription")))
+                                   )
                           )
               )
       )
