@@ -13,12 +13,20 @@ VignetteBuilder: knitr
 URL: https://github.com/alondhe/CharlsonIndexGenerator
 BugReports: https://github.com/alondhe/CharlsonIndexGenerator/issues
 Depends:
-  R (>= 3.2.2),
+  R (>= 4.1.0),
   DatabaseConnector (>= 3.0.0)
 Imports:
   dplyr,
   rJava,
   SqlRender (>= 1.6.0)
+Suggests:
+  Eunomia,
+  knitr,
+  rmarkdown,
+  shiny,
+  shinydashboard
+Remotes:
+  ohdsi/Eunomia
 NeedsCompilation: no
 RoxygenNote: 7.1.2
 Encoding: UTF-8
