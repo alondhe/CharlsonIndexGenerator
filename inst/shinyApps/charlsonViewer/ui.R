@@ -19,6 +19,7 @@ ui <- dashboardPage(
                    sidebarMenu(
                      id = "tabs",
                      menuItem(text = "Introduction", tabName = "intro", selected = TRUE, icon = icon("info")),
+                     menuItem(text = "Charlson Method", tabName = "method", icon = icon("book")),
                      menuItem(text = "Generate Charlson Results", tabName = "charlson", icon = icon("stethoscope"))
                    )
   ),
@@ -39,6 +40,12 @@ ui <- dashboardPage(
                     }))
               )
       ),
+      tabItem("method",
+              box(width = 6,
+                  DT::dataTableOutput(outputId = "charlsonScoring") |> shinycssloaders::withSpinner()),
+              box(width = 6,
+                  DT::dataTableOutput(outputId = "charlsonConcepts") |> shinycssloaders::withSpinner())
+              ),
       tabItem("charlson",
               tabsetPanel(id = "wizard", type = "hidden",
                           tabPanel("page_1",

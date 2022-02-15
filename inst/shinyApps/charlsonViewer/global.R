@@ -6,8 +6,14 @@ sum of the occurrence of 17 medical conditions of interest."
 appIntro <- "This application applies the Charlson Comorbidity Index to a drug cohort of interest. All data analyses are performed against data transformed to the OMOP Common Data Model v5.4"
 
 step1 <- "Fill out the connection details for your CDM database. If you'd like to simply demo this tool without connecting to your environment, select the synthetic \"Eunomia\" DBMS type."
-step2 <- "Select 1 or more drug concept ids for creation of an exposed population, indexed on the date of first exposure."
+step2 <- "Select 1 or more drug concepts rows for creation of an exposed population, indexed on the date of first exposure. Selected rows appear in blue."
 step3 <- "Below are a box plot of the Charlson Index scores for this cohort, as well as a listing of the scores per Person Id."
+
+
+charlsonSteps <- c(
+  "From the Charlson method, we assign scoring weights to 17 "
+)
+
 
 references <- c(
 "Charlson M, Szatrowski TP, Peterson J, Gold J. Validation of a combined comorbidity index. J Clin Epidemiol 1994;47(11):1245-51.",
