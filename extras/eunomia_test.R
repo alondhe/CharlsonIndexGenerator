@@ -8,7 +8,9 @@ result <- CharlsonIndexGenerator::getCharlsonForDrugCohort(connectionDetails = c
                                                            drugConceptIds = drugConceptIds,
                                                            sqlOnly = FALSE)
 
-result <- CharlsonIndexGenerator::getCharlsonForDrugCohort(connectionDetails = connectionDetails,
+result <- CharlsonIndexGenerator::getCharlsonForDrugCohort(connectionDetails = list(dbms = "sql server"),
                                                            cdmDatabaseSchema = cdmDatabaseSchema, 
                                                            drugConceptIds = drugConceptIds,
                                                            sqlOnly = TRUE)
+
+SqlRender::writeSql(sql = result, targetFile = "~/git/charlsonTest.sql")
