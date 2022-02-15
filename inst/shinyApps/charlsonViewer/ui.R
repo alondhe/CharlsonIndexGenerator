@@ -8,7 +8,7 @@ library(shinycssloaders)
 library(magrittr)
 
 ui <- dashboardPage(
-  dashboardHeader(title = "CharlsonViewer", titleWidth = "250px",
+  dashboardHeader(title = "Charlson Cohort Viewer", titleWidth = "250px",
                   dropdownMenuOutput(outputId = "tasksDropdown"),
                   tags$li(a(href = "http://www.ohdsi.org", target = "_blank",
                             img(src = "ohdsi_logo_mini.png",
@@ -19,7 +19,7 @@ ui <- dashboardPage(
                    sidebarMenu(
                      id = "tabs",
                      menuItem(text = "Introduction", tabName = "intro", selected = TRUE, icon = icon("info")),
-                     menuItem(text = "Generate Charlson Results", tabName = "charlson", icon = icon("prescription"))
+                     menuItem(text = "Generate Charlson Results", tabName = "charlson", icon = icon("stethoscope"))
                    )
   ),
   dashboardBody(
@@ -44,6 +44,7 @@ ui <- dashboardPage(
                           tabPanel("page_1",
                                    box(width = 12,
                                        title = "Configure Connection",
+                                       p(step1),
                                        selectizeInput(inputId = "dbms", label = "DBMS", 
                                                       choices = dbmsChoices),
                                        textInput(inputId = "cdmDatabaseSchema", label = "CDM Database Schema"),
@@ -54,20 +55,25 @@ ui <- dashboardPage(
                                        passwordInput(inputId = "password", label = "Password", value = "", width = NULL, placeholder = NULL)
                                    ),
                                    box(width = 12,
-                                       actionButton(inputId = "page_12", label = "Next: Select Drug Concepts"))
+                                       actionButton(inputId = "page_12", label = "Next: Select Drug Concepts",
+                                                    icon = icon("prescription")))
                           ),
                           tabPanel("page_2",
                                    box(width = 12,
                                        title = "Select Drug Concepts for Cohort",
+                                       p(step2),
                                        DT::dataTableOutput(outputId = "drugConceptIds") |> 
                                         shinycssloaders::withSpinner()),
                                    box(width = 12,
-                                       actionButton(inputId = "page_21", label = "Previous: Configure Connection"),
-                                       actionButton(inputId = "page_23", label = "Next: View Charlson Results"))
+                                       actionButton(inputId = "page_21", label = "Previous: Configure Connection",
+                                                    icon = icon("database")),
+                                       actionButton(inputId = "page_23", label = "Next: View Charlson Results",
+                                                    icon = icon("chart-line")))
                           ),
                           tabPanel("page_3",
                                    box(width = 12,
-                                       uiOutput(outputId = "cohortMeta")),
+                                       uiOutput(outputId = "cohortMeta"),
+                                       p(step3)),
                                    box(width = 6,
                                        plotlyOutput(outputId = "boxplot") |> 
                                          shinycssloaders::withSpinner()),
@@ -75,7 +81,8 @@ ui <- dashboardPage(
                                        DT::dataTableOutput(outputId = "cohortRows") |> 
                                          shinycssloaders::withSpinner()),
                                    box(width = 12,
-                                       actionButton(inputId = "page_32", label = "Previous: Select Drug Concepts"))
+                                       actionButton(inputId = "page_32", label = "Previous: Select Drug Concepts",
+                                                    icon = icon("prescription")))
                           )
               )
       )
