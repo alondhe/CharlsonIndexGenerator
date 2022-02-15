@@ -156,7 +156,9 @@ shinyServer(function(input, output, session) {
   output$charlsonConcepts <- renderDataTable({
     df <- charlsonConcepts |>
       dplyr::select(`Diagnosis Category Id` = diag_category_id,
-                    `Ancestor Concept Id` = ancestor_concept_id)
+                    `Ancestor Concept Id` = ancestor_concept_id,
+                    `Ancestor Concept Name` = ancestor_concept_name) |>
+      dplyr::arrange(`Diagnosis Category Id`, `Ancestor Concept Id`)
     
     DT::datatable(df,
                   filter = "top",

@@ -39,3 +39,5 @@ vignettes/*.pdf
 .Renviron
 
 errorReportSql.txt
+
+.DS_Store

@@ -1,30 +1,30 @@
-diag_category_id,ancestor_concept_id
-1,4329847
-2,316139
-3,321052
-4,381591
-4,434056
-5,4182210
-6,4063381
-7,257628
-7,134442
-7,80800
-7,80809
-7,256197
-7,255348
-8,4247120
-9,4064161
-9,4212540
-10,201820
-11,443767
-11,442793
-12,192606
-12,374022
-13,4030518
-14,443392
-15,4245975
-15,4029488
-15,192680
-15,24966
-16,432851
-17,439727
+diag_category_id,ancestor_concept_id,ancestor_concept_name
+15,24966,Esophageal varices
+7,80800,Polymyositis
+7,80809,Rheumatoid arthritis
+7,134442,Systemic sclerosis
+12,192606,Paraplegia
+15,192680,Portal hypertension
+10,201820,Diabetes mellitus
+7,255348,Polymyalgia rheumatica
+7,256197,Rheumatoid lung disease
+7,257628,Systemic lupus erythematosus
+2,316139,Heart failure
+3,321052,Peripheral vascular disease
+12,374022,Hemiplegia
+4,381591,Cerebrovascular disease
+16,432851,Secondary malignant neoplastic disease
+4,434056,Late effects of cerebrovascular disease
+17,439727,Human immunodeficiency virus infection
+11,442793,Complication due to diabetes mellitus
+14,443392,Malignant neoplastic disease
+11,443767,Disorder of eye due to diabetes mellitus
+15,4029488,Hepatic encephalopathy
+13,4030518,Renal impairment
+6,4063381,Chronic disease of respiratory system
+9,4064161,Cirrhosis of liver
+5,4182210,Dementia
+9,4212540,Chronic liver disease
+15,4245975,Hepatic failure
+8,4247120,Gastrointestinal ulcer
+1,4329847,Myocardial infarction
