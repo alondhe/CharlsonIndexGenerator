@@ -98,9 +98,11 @@ shinyServer(function(input, output, session) {
                                                                          sqlOnly = FALSE)
       DatabaseConnector::disconnect(connection = connection)
       charlsonResult |> dplyr::select(`Person Id` = SUBJECT_ID,
+                                      `Age` = AGE,
                                       `Cohort Start Date` = COHORT_START_DATE,
                                       `Cohort End Date` = COHORT_END_DATE,
-                                      `Charlson Index` = COVARIATE_VALUE)
+                                      `Charlson Index` = COVARIATE_VALUE,
+                                      `Charlson (age-adjusted)` = AGE_ADJUSTED_VALUE)
     }
   })
   
@@ -130,7 +132,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$boxplot <- renderPlotly({
-    fig <- plotly::plot_ly(data = charlsonResult(), y = ~`Charlson Index`, type = "box", name = cohortName())
+    fig <- plotly::plot_ly(data = charlsonResult(), y = ~`Charlson (age-adjusted)`, type = "box", name = "Charlson (age-adjusted)") |>
+      plotly::add_trace(y = ~`Charlson Index`, name = "Charlson (unadjusted)")
     
     fig
   })

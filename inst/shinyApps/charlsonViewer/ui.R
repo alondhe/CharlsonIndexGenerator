@@ -97,10 +97,10 @@ ui <- dashboardPage(
                                      box(width = 12,
                                          uiOutput(outputId = "cohortMeta"),
                                          p(step3)),
-                                     box(width = 6,
+                                     box(width = 6, title = "Box Plot of Charlson Values",
                                          plotlyOutput(outputId = "boxplot") |> 
                                            shinycssloaders::withSpinner()),
-                                     box(width = 6,
+                                     box(width = 6, title = "Patient Level Charlson Values",
                                          DT::dataTableOutput(outputId = "cohortRows") |> 
                                            shinycssloaders::withSpinner()),
                                      box(width = 12,
