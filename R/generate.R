@@ -27,8 +27,8 @@
 #' @param connectionDetails       An R object of type\cr\code{connectionDetails} created using the function
 #'                                \code{createConnectionDetails} in the \code{DatabaseConnector} package.
 #' @param cdmDatabaseSchema       The fully qualified name of the CDM schema
-#' @param cohortName              A readable name of the drug cohort, used for writing out the SQL
-#' @param pathToSqlFile           The path to use to write out the SQL file
+#' @param cohortName              A readable name of the drug cohort, used for writing out the SQL in SqlOnly mode
+#' @param pathToSqlFile           The path to use to write out the SQL file, when using SqlOnly mode
 #' @param drugConceptIds          A list of drug concepts
 #' @param sqlOnly                 Should we just export a SQL file, or actually run the query?
 #' 
@@ -60,8 +60,6 @@ getCharlsonForDrugCohort <- function(connectionDetails,
                                                 cohortSql = cohortSql,
                                                 charlsonSql = charlsonSql)
   
-  SqlRender::writeSql(sql = finalSql, targetFile = file.path(pathToSqlFile, 
-                                                             sprintf("CharlsonIndex_%s.sql", cohortName)))
   
   if (!sqlOnly) {
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
@@ -69,6 +67,9 @@ getCharlsonForDrugCohort <- function(connectionDetails,
     result <- DatabaseConnector::querySql(connection = connection, sql = finalSql)
     return (result)
   }
+  
+  SqlRender::writeSql(sql = finalSql, targetFile = file.path(pathToSqlFile, 
+                                                             sprintf("CharlsonIndex_%s.sql", cohortName)))
   return (finalSql)
 }
 

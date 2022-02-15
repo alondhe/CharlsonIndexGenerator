@@ -22,6 +22,8 @@ references <- c(
   return(df)
 }
 
+dbmsChoices <- c("eunomia", SqlRender::listSupportedDialects()$dialect)
+
 connectionDetails <- Eunomia::getEunomiaConnectionDetails()
 connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
 allDrugConcepts <- DatabaseConnector::querySql(connection = connection, 

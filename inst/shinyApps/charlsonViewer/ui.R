@@ -23,6 +23,7 @@ ui <- dashboardPage(
                    )
   ),
   dashboardBody(
+    shinyjs::useShinyjs(),
     tags$head(
       tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
     tabItems(
@@ -44,7 +45,8 @@ ui <- dashboardPage(
                                    box(width = 12,
                                        title = "Configure Connection",
                                        selectizeInput(inputId = "dbms", label = "DBMS", 
-                                                      choices = SqlRender::listSupportedDialects()$dialect),
+                                                      choices = dbmsChoices),
+                                       textInput(inputId = "cdmDatabaseSchema", label = "CDM Database Schema"),
                                        textInput(inputId = "host", label = "Host URL", width = "100%"),
                                        textInput(inputId = "user", label = "User Name", width = "100%"),
                                        textInput(inputId = "port", label = "Port", width = "100%"),
@@ -66,14 +68,15 @@ ui <- dashboardPage(
                           tabPanel("page_3",
                                    box(width = 12,
                                        uiOutput(outputId = "cohortMeta")),
-                                   box(width = 12,
+                                   box(width = 6,
                                        plotlyOutput(outputId = "boxplot") |> 
                                          shinycssloaders::withSpinner()),
-                                   box(width = 12,
+                                   box(width = 6,
                                        DT::dataTableOutput(outputId = "cohortRows") |> 
                                          shinycssloaders::withSpinner()),
                                    box(width = 12,
-                                       actionButton(inputId = "page_32", label = "Previous: Select Drug Concepts")))
+                                       actionButton(inputId = "page_32", label = "Previous: Select Drug Concepts"))
+                          )
               )
       )
     )
